@@ -1,6 +1,6 @@
 Write-Host "=== SimpleClock Build ===" -ForegroundColor Cyan
 
-pyinstaller --onefile --windowed --name SimpleClock --clean main.py
+uv run pyinstaller --onefile --windowed --name SimpleClock --clean main.py
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Build FAILED (exit $LASTEXITCODE)" -ForegroundColor Red
