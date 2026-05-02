@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"New-Item -ItemType Directory -Force -Path \\\"C:\\\\Users\\\\Simelvia\\\\.claude\\\\projects\\\\C--Data-Develop-simple-clock\\\\memory\\\" | Out-Null\",\"description\":\"Create memory directory for this proje...",
-  "error": "Exit code 127\n/usr/bin/bash: line 1: New-Item: command not found\n/usr/bin/bash: line 1: Out-Null: command not found",
-  "timestamp": "2026-05-02T12:11:52.096Z",
-  "retry_count": 1
-}

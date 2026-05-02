@@ -1,5 +1,6 @@
 # Claude code
-.omc
+.omc/*
+!.omc/specs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
