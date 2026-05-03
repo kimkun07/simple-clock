@@ -14,16 +14,13 @@ def _asset_path(filename: str) -> str:
 
 
 class SystemTray(QSystemTrayIcon):
-    def __init__(self, window, move_controller, parent=None):
-        icon = QIcon(_asset_path("icon.ico"))
-        super().__init__(icon, parent)
-        self._move_controller = move_controller
-        self._build_menu()
+    def __init__(self, window, parent=None):
+        super().__init__(QIcon(_asset_path("icon.ico")), parent)
+        self._build_menu(window)
         self.show()
 
-    def _build_menu(self):
+    def _build_menu(self, window):
         menu = QMenu()
-        menu.addAction("창 이동", self._move_controller.start)
         menu.addAction("커스터마이즈", self._on_customize)
         menu.addSeparator()
         menu.addAction("종료", QApplication.quit)

@@ -1,17 +1,22 @@
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QLabel, QMainWindow
+from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow
 
-from src.win32_utils import apply_tool_window_style
+from src.win32_utils import apply_tool_window_style, set_caption_color
+
+DEFAULT_CAPTION_COLOR = "#2B2B2B"
 
 
 class ClockWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool)
+        self.setWindowTitle("SimpleClock")
         self.setMinimumSize(200, 100)
-        label = QLabel("테스트")
-        self.setCentralWidget(label)
+        self.setCentralWidget(QLabel("테스트"))
 
     def showEvent(self, event):
         super().showEvent(event)
         apply_tool_window_style(self)
+        set_caption_color(self, DEFAULT_CAPTION_COLOR)
+
+    def closeEvent(self, event):
+        QApplication.quit()
+        event.accept()

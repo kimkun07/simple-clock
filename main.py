@@ -8,7 +8,6 @@ from PyQt6.QtWidgets import QApplication
 
 from src.clock_window import ClockWindow
 from src.tray import SystemTray
-from src.window_move import MoveModeController
 
 
 def _install_excepthook():
@@ -38,8 +37,7 @@ def main():
     shared_mem.create(1)
 
     window = ClockWindow()
-    move_controller = MoveModeController(window)
-    app.tray = SystemTray(window, move_controller, parent=app)
+    app.tray = SystemTray(window, parent=app)
 
     window.show()
     sys.exit(app.exec())
