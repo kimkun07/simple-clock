@@ -1,9 +1,10 @@
 from datetime import datetime
 
 from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget
 
 from src.config import ConfigStore, _make_default_textbox
+from src.customize_dialog import CustomizeDialog
 from src.textbox import TextBoxWidget
 from src.win32_utils import set_caption_color
 
@@ -13,6 +14,7 @@ class ClockWindow(QMainWindow):
         super().__init__()
         self._config = config
         self._textboxes: list[TextBoxWidget] = []
+        self._dialog: CustomizeDialog | None = None
 
         self.setWindowTitle("SimpleClock")
 
@@ -22,6 +24,16 @@ class ClockWindow(QMainWindow):
         self._apply_window_config()
         self._rebuild_textboxes()
         self._schedule_tick()
+
+        self._menu_btn = QPushButton("☰", self._container)
+        self._menu_btn.setFixedSize(28, 28)
+        self._menu_btn.setStyleSheet(
+            "QPushButton { background: rgba(0,0,0,100); color: white; border: none;"
+            " border-radius: 4px; font-size: 14px; }"
+            " QPushButton:hover { background: rgba(80,80,80,180); }"
+        )
+        self._menu_btn.clicked.connect(self._open_customize)
+        self._menu_btn.raise_()
 
     def _apply_window_config(self) -> None:
         w = self._config.window
@@ -36,6 +48,24 @@ class ClockWindow(QMainWindow):
     def showEvent(self, event):
         super().showEvent(event)
         set_caption_color(self, self._config.window.get("titlebar_color", "#2b2b2b"))
+        self._reposition_menu_btn()
+
+    def resizeEvent(self, event) -> None:
+        super().resizeEvent(event)
+        self._reposition_menu_btn()
+
+    def _reposition_menu_btn(self) -> None:
+        if not hasattr(self, "_menu_btn"):
+            return
+        btn = self._menu_btn
+        btn.move(self._container.width() - btn.width() - 4, self._container.height() - btn.height() - 4)
+
+    def _open_customize(self) -> None:
+        if self._dialog is None or not self._dialog.isVisible():
+            self._dialog = CustomizeDialog(self, self._config)
+        self._dialog.show()
+        self._dialog.raise_()
+        self._dialog.activateWindow()
 
     def _rebuild_textboxes(self) -> None:
         for tb in self._textboxes:

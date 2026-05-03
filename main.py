@@ -8,7 +8,6 @@ from PyQt6.QtWidgets import QApplication
 
 from src.clock_window import ClockWindow
 from src.config import ConfigStore
-from src.tray import SystemTray
 
 
 def _install_excepthook():
@@ -39,8 +38,6 @@ def main():
 
     config = ConfigStore.load()
     window = ClockWindow(config)
-    app.tray = SystemTray(window, config, parent=app)
-
     def _on_quit():
         window.sync_window_geometry()
         config.save()
