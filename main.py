@@ -3,7 +3,11 @@ import sys
 import traceback
 from datetime import datetime
 
-from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow
+from PyQt6.QtCore import QSharedMemory
+from PyQt6.QtWidgets import QApplication
+
+from src.clock_window import ClockWindow
+from src.tray import SystemTray
 
 
 def _install_excepthook():
@@ -22,20 +26,19 @@ def _install_excepthook():
     sys.excepthook = _hook
 
 
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("SimpleClock")
-        self.setMinimumSize(200, 100)
-        label = QLabel("테스트")
-        label.setAlignment(label.alignment())
-        self.setCentralWidget(label)
-
-
 def main():
     _install_excepthook()
     app = QApplication(sys.argv)
-    window = MainWindow()
+    app.setQuitOnLastWindowClosed(False)
+
+    shared_mem = QSharedMemory("SimpleClock-singleton")
+    if shared_mem.attach():
+        sys.exit(0)
+    shared_mem.create(1)
+
+    window = ClockWindow()
+    app.tray = SystemTray(window, parent=app)
+
     window.show()
     sys.exit(app.exec())
 

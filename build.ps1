@@ -1,6 +1,8 @@
 Write-Host "=== SimpleClock Build ===" -ForegroundColor Cyan
 
-uv run pyinstaller --onefile --windowed --name SimpleClock --clean main.py
+uv run pyinstaller --onefile --windowed --name SimpleClock --clean `
+    --add-data "assets/icon.ico;assets" `
+    main.py
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Build FAILED (exit $LASTEXITCODE)" -ForegroundColor Red
@@ -24,5 +26,5 @@ Write-Host ""
 Write-Host "*** SMOKE TEST REMINDER ***" -ForegroundColor Yellow
 Write-Host "Copy dist\SimpleClock.exe to a Windows Sandbox, VM, or user account"
 Write-Host "that has NO Python or Qt installed, then double-click."
-Write-Host "Expected: window appears with no DLL errors."
+Write-Host "Expected: frameless window + tray icon with no DLL errors."
 Write-Host "If it crashes: rerun with --collect-all PyQt6 added to this script."
