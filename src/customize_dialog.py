@@ -99,9 +99,22 @@ class _TemplateEditor(QTextEdit):
             None,
         )
         if existing:
-            existing.update(kwargs)
+            for key, val in kwargs.items():
+                # Toggle bold/italic when the button is pressed again on the same selection
+                if key in ("bold", "italic") and existing.get(key) == val:
+                    existing[key] = False
+                else:
+                    existing[key] = val
         else:
             run = {"start": start, "length": length, "color": None, "bold": False, "italic": False}
+            # Inherit bold/italic from any run that fully covers the selection so that
+            # picking a color does not inadvertently strip existing bold/italic.
+            sel_end = start + length
+            for r in self._runs:
+                if r["start"] <= start and r["start"] + r["length"] >= sel_end:
+                    run["bold"] = r.get("bold", False)
+                    run["italic"] = r.get("italic", False)
+                    break
             run.update(kwargs)
             self._runs.append(run)
         self._apply_runs_to_display()
