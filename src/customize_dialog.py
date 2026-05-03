@@ -191,15 +191,25 @@ class CustomizeDialog(QDialog):
         toolbar.addStretch()
         right_layout.addLayout(toolbar)
 
-        # Variable buttons
-        var_row = QHBoxLayout()
+        # Variable buttons — row 1: zero-padded originals
+        var_row1 = QHBoxLayout()
         for var in ["{HH}", "{mm}", "{ss}", "{YYYY}", "{MM}", "{DD}", "{ddd}"]:
             btn = QPushButton(var)
-            btn.setFixedWidth(60)
+            btn.setFixedWidth(62)
             btn.clicked.connect(lambda _checked, v=var: self._editor.insert_variable(v))
-            var_row.addWidget(btn)
-        var_row.addStretch()
-        right_layout.addLayout(var_row)
+            var_row1.addWidget(btn)
+        var_row1.addStretch()
+        right_layout.addLayout(var_row1)
+
+        # Variable buttons — row 2: non-padded variants + Korean weekday
+        var_row2 = QHBoxLayout()
+        for var in ["{H}", "{m}", "{s}", "{YY}", "{M}", "{D}", "{KW}"]:
+            btn = QPushButton(var)
+            btn.setFixedWidth(62)
+            btn.clicked.connect(lambda _checked, v=var: self._editor.insert_variable(v))
+            var_row2.addWidget(btn)
+        var_row2.addStretch()
+        right_layout.addLayout(var_row2)
 
         right_layout.addWidget(QLabel("템플릿 텍스트:"))
         self._editor = _TemplateEditor()

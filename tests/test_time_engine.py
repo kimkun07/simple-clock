@@ -86,3 +86,55 @@ def test_multiple_variables_order():
     r_start, r_len = remap_run(0, 6, omap)  # "{YYYY}" len=6 → "2026" len=4
     assert r_start == 0
     assert r_len == 4
+
+
+# ── New format variables ────────────────────────────────────────────────────
+
+def test_non_padded_month_day():
+    # May 3 → "5월 3일" (no zero padding)
+    text, _ = render("{M}월 {D}일", _NOW)
+    assert text == "5월 2일"
+
+
+def test_non_padded_time():
+    text, _ = render("{H}:{m}:{s}", _NOW)
+    assert text == "9:7:3"
+
+
+def test_two_digit_year():
+    text, _ = render("{YY}", _NOW)
+    assert text == "26"
+
+
+def test_korean_weekday_is_single_char():
+    text, _ = render("{KW}", _NOW)
+    assert text in ("월", "화", "수", "목", "금", "토", "일")
+
+
+def test_korean_weekday_saturday():
+    # datetime(2026, 5, 2) is a Saturday
+    import calendar
+    now = datetime(2026, 5, 2, 9, 7, 3)
+    assert now.weekday() == 5  # Saturday
+    text, _ = render("{KW}", now)
+    assert text == "토"
+
+
+def test_kr_weekday_monday():
+    # Find a Monday: 2026-05-04
+    now = datetime(2026, 5, 4, 0, 0, 0)
+    assert now.weekday() == 0
+    text, _ = render("{KW}", now)
+    assert text == "월"
+
+
+def test_non_padded_no_leading_zero():
+    now = datetime(2026, 1, 3, 9, 5, 7)
+    text, _ = render("{M}/{D} {H}:{m}:{s}", now)
+    assert text == "1/3 9:5:7"
+
+
+def test_padded_still_works_alongside_non_padded():
+    now = datetime(2026, 1, 3, 9, 5, 7)
+    text, _ = render("{MM}/{DD} {HH}:{mm}:{ss}", now)
+    assert text == "01/03 09:05:07"

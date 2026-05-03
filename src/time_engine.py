@@ -1,10 +1,13 @@
 import re
 from datetime import datetime
 
-_VARS = re.compile(r"\{(HH|mm|ss|YYYY|MM|DD|ddd)\}")
+# Longer patterns must come before shorter ones that share a prefix (YYYY before YY, MM before M, etc.)
+_VARS = re.compile(r"\{(YYYY|YY|MM|DD|HH|mm|ss|ddd|KW|H|m|s|M|D)\}")
 
 # (template_start, template_token_len, rendered_start, rendered_token_len)
 OffsetMap = list[tuple[int, int, int, int]]
+
+_KR_WEEKDAY = ["월", "화", "수", "목", "금", "토", "일"]
 
 
 def render(template_text: str, now: datetime) -> tuple[str, OffsetMap]:
@@ -12,6 +15,7 @@ def render(template_text: str, now: datetime) -> tuple[str, OffsetMap]:
 
     def _sub(var: str) -> str:
         match var:
+            # Zero-padded (original)
             case "HH":
                 return now.strftime("%H")
             case "mm":
@@ -26,6 +30,22 @@ def render(template_text: str, now: datetime) -> tuple[str, OffsetMap]:
                 return now.strftime("%d")
             case "ddd":
                 return now.strftime("%a")
+            # Non-padded variants
+            case "H":
+                return str(now.hour)
+            case "m":
+                return str(now.minute)
+            case "s":
+                return str(now.second)
+            case "M":
+                return str(now.month)
+            case "D":
+                return str(now.day)
+            case "YY":
+                return now.strftime("%y")
+            # Korean weekday (월화수목금토일)
+            case "KW":
+                return _KR_WEEKDAY[now.weekday()]
         return var
 
     offset_map: OffsetMap = []
