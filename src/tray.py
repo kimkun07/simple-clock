@@ -2,7 +2,10 @@ import os
 import sys
 
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication, QMenu, QMessageBox, QSystemTrayIcon
+from PyQt6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
+
+from src.config import ConfigStore
+from src.customize_dialog import CustomizeDialog
 
 
 def _asset_path(filename: str) -> str:
@@ -14,21 +17,24 @@ def _asset_path(filename: str) -> str:
 
 
 class SystemTray(QSystemTrayIcon):
-    def __init__(self, window, parent=None):
+    def __init__(self, window, config: ConfigStore, parent=None):
         super().__init__(QIcon(_asset_path("icon.ico")), parent)
-        self._build_menu(window)
+        self._window = window
+        self._config = config
+        self._dialog: CustomizeDialog | None = None
+        self._build_menu()
         self.show()
 
-    def _build_menu(self, window):
+    def _build_menu(self) -> None:
         menu = QMenu()
         menu.addAction("커스터마이즈", self._on_customize)
         menu.addSeparator()
         menu.addAction("종료", QApplication.quit)
         self.setContextMenu(menu)
 
-    def _on_customize(self):
-        QMessageBox.information(
-            None,
-            "커스터마이즈",
-            "커스터마이즈 기능은 Phase 3에서 구현됩니다.",
-        )
+    def _on_customize(self) -> None:
+        if self._dialog is None or not self._dialog.isVisible():
+            self._dialog = CustomizeDialog(self._window, self._config)
+        self._dialog.show()
+        self._dialog.raise_()
+        self._dialog.activateWindow()

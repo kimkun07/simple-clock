@@ -7,6 +7,7 @@ from PyQt6.QtCore import QSharedMemory
 from PyQt6.QtWidgets import QApplication
 
 from src.clock_window import ClockWindow
+from src.config import ConfigStore
 from src.tray import SystemTray
 
 
@@ -36,9 +37,15 @@ def main():
         sys.exit(0)
     shared_mem.create(1)
 
-    window = ClockWindow()
-    app.tray = SystemTray(window, parent=app)
+    config = ConfigStore.load()
+    window = ClockWindow(config)
+    app.tray = SystemTray(window, config, parent=app)
 
+    def _on_quit():
+        window.sync_window_geometry()
+        config.save()
+
+    app.aboutToQuit.connect(_on_quit)
     window.show()
     sys.exit(app.exec())
 
