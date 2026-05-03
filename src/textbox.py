@@ -17,6 +17,7 @@ class TextBoxWidget(QTextEdit):
         self._base_font_family: str = config.get("base_font_family", "Segoe UI")
         self._base_font_size: int = config.get("base_font_size", 24)
         self._last_rendered: str | None = None
+        self._ticking: bool = False
 
         self.setReadOnly(True)
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
@@ -37,6 +38,8 @@ class TextBoxWidget(QTextEdit):
         )
 
     def _fit_height(self) -> None:
+        if self._ticking:
+            return  # defer until end of tick to avoid mid-update resize flicker
         m = self.contentsMargins()
         new_h = max(int(self.document().size().height()) + m.top() + m.bottom(), 10)
         if new_h != self.height():
@@ -50,8 +53,14 @@ class TextBoxWidget(QTextEdit):
         if rendered_text == self._last_rendered:
             return
         self._last_rendered = rendered_text
+        self._ticking = True
+        self.setUpdatesEnabled(False)
         self.setPlainText(rendered_text)
         self._apply_format_runs(offset_map)
+        self._ticking = False
+        self._fit_height()           # single resize after both steps
+        self.setUpdatesEnabled(True)
+        self.update()
 
     def _apply_format_runs(self, offset_map) -> None:
         doc = self.document()
