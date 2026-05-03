@@ -222,17 +222,14 @@ class CustomizeDialog(QDialog):
         pos_layout = QHBoxLayout(pos_group)
         self._x_spin = QSpinBox()
         self._y_spin = QSpinBox()
-        self._w_spin = QSpinBox()
         for spin, label in [
             (self._x_spin, "X"),
             (self._y_spin, "Y"),
-            (self._w_spin, "W"),
         ]:
             spin.setRange(0, 9999)
             spin.setPrefix(f"{label}: ")
             spin.valueChanged.connect(self._on_geometry_changed)
             pos_layout.addWidget(spin)
-        self._w_spin.setMinimum(10)
         right_layout.addWidget(pos_group)
 
         # Font
@@ -310,7 +307,6 @@ class CustomizeDialog(QDialog):
             self._editor.load(cfg.get("template_text", ""), cfg.get("format_runs", []))
             self._x_spin.setValue(cfg.get("x", 0))
             self._y_spin.setValue(cfg.get("y", 0))
-            self._w_spin.setValue(cfg.get("width", 200))
             self._font_combo.setCurrentFont(QFont(cfg.get("base_font_family", "Segoe UI")))
             self._size_spin.setValue(cfg.get("base_font_size", 24))
         finally:
@@ -359,7 +355,6 @@ class CustomizeDialog(QDialog):
             {
                 "x": self._x_spin.value(),
                 "y": self._y_spin.value(),
-                "width": self._w_spin.value(),
             },
         )
         self._schedule_save()

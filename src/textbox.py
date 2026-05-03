@@ -24,6 +24,7 @@ class TextBoxWidget(QTextEdit):
         self.setFrameStyle(QFrame.Shape.NoFrame.value)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
         self.setStyleSheet("QTextEdit { background: transparent; border: none; }")
 
         self._apply_base_font()
@@ -31,19 +32,20 @@ class TextBoxWidget(QTextEdit):
             config.get("x", 0),
             config.get("y", 0),
             config.get("width", 200),
-            60,  # initial placeholder; _fit_height will correct this after first render
+            60,  # initial placeholder; _fit_size will correct this after first render
         )
         self.document().documentLayout().documentSizeChanged.connect(
-            lambda _size: self._fit_height()
+            lambda _size: self._fit_size()
         )
 
-    def _fit_height(self) -> None:
+    def _fit_size(self) -> None:
         if self._ticking:
             return  # defer until end of tick to avoid mid-update resize flicker
         m = self.contentsMargins()
+        new_w = max(int(self.document().idealWidth()) + m.left() + m.right(), 10)
         new_h = max(int(self.document().size().height()) + m.top() + m.bottom(), 10)
-        if new_h != self.height():
-            self.resize(self.width(), new_h)
+        if new_w != self.width() or new_h != self.height():
+            self.resize(new_w, new_h)
 
     def _apply_base_font(self) -> None:
         self.document().setDefaultFont(QFont(self._base_font_family, self._base_font_size))
@@ -58,7 +60,7 @@ class TextBoxWidget(QTextEdit):
         self.setPlainText(rendered_text)
         self._apply_format_runs(offset_map)
         self._ticking = False
-        self._fit_height()           # single resize after both steps
+        self._fit_size()             # single resize after both steps
         self.setUpdatesEnabled(True)
         self.update()
 
@@ -96,12 +98,12 @@ class TextBoxWidget(QTextEdit):
             font_changed = True
         if font_changed:
             self._apply_base_font()
-        geo_keys = {"x", "y", "width"}
+        geo_keys = {"x", "y"}
         if geo_keys & updates.keys():
             self.setGeometry(
                 updates.get("x", self.x()),
                 updates.get("y", self.y()),
-                updates.get("width", self.width()),
+                self.width(),   # width is auto; never apply from config
                 self.height(),  # height is auto; never apply from config
             )
         self._last_rendered = None  # force re-render on next tick
