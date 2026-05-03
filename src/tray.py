@@ -17,7 +17,6 @@ class SystemTray(QSystemTrayIcon):
     def __init__(self, window, move_controller, parent=None):
         icon = QIcon(_asset_path("icon.ico"))
         super().__init__(icon, parent)
-        self._window = window
         self._move_controller = move_controller
         self._build_menu()
         self.show()

@@ -39,7 +39,7 @@ def main():
 
     window = ClockWindow()
     move_controller = MoveModeController(window)
-    tray = SystemTray(window, move_controller, parent=app)  # noqa: F841
+    app.tray = SystemTray(window, move_controller, parent=app)
 
     window.show()
     sys.exit(app.exec())
