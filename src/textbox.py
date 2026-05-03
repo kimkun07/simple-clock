@@ -30,8 +30,17 @@ class TextBoxWidget(QTextEdit):
             config.get("x", 0),
             config.get("y", 0),
             config.get("width", 200),
-            config.get("height", 60),
+            60,  # initial placeholder; _fit_height will correct this after first render
         )
+        self.document().documentLayout().documentSizeChanged.connect(
+            lambda _size: self._fit_height()
+        )
+
+    def _fit_height(self) -> None:
+        m = self.contentsMargins()
+        new_h = max(int(self.document().size().height()) + m.top() + m.bottom(), 10)
+        if new_h != self.height():
+            self.resize(self.width(), new_h)
 
     def _apply_base_font(self) -> None:
         self.document().setDefaultFont(QFont(self._base_font_family, self._base_font_size))
@@ -78,13 +87,13 @@ class TextBoxWidget(QTextEdit):
             font_changed = True
         if font_changed:
             self._apply_base_font()
-        geo_keys = {"x", "y", "width", "height"}
+        geo_keys = {"x", "y", "width"}
         if geo_keys & updates.keys():
             self.setGeometry(
                 updates.get("x", self.x()),
                 updates.get("y", self.y()),
                 updates.get("width", self.width()),
-                updates.get("height", self.height()),
+                self.height(),  # height is auto; never apply from config
             )
         self._last_rendered = None  # force re-render on next tick
 
