@@ -15,6 +15,7 @@ class ClockWindow(QMainWindow):
         self._config = config
         self._textboxes: list[TextBoxWidget] = []
         self._dialog: CustomizeDialog | None = None
+        self._menu_btn: QPushButton | None = None
 
         self.setWindowTitle("SimpleClock")
 
@@ -55,7 +56,7 @@ class ClockWindow(QMainWindow):
         self._reposition_menu_btn()
 
     def _reposition_menu_btn(self) -> None:
-        if not hasattr(self, "_menu_btn"):
+        if self._menu_btn is None:
             return
         btn = self._menu_btn
         btn.move(self._container.width() - btn.width() - 4, self._container.height() - btn.height() - 4)

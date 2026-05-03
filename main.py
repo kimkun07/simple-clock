@@ -38,6 +38,7 @@ def main():
 
     config = ConfigStore.load()
     window = ClockWindow(config)
+
     def _on_quit():
         window.sync_window_geometry()
         config.save()
