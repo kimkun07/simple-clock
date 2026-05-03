@@ -113,7 +113,6 @@ def test_korean_weekday_is_single_char():
 
 def test_korean_weekday_saturday():
     # datetime(2026, 5, 2) is a Saturday
-    import calendar
     now = datetime(2026, 5, 2, 9, 7, 3)
     assert now.weekday() == 5  # Saturday
     text, _ = render("{KW}", now)
