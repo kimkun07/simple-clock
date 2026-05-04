@@ -4,6 +4,7 @@ import traceback
 from datetime import datetime
 
 from PyQt6.QtCore import QSharedMemory
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 
 from src.clock_window import ClockWindow
@@ -26,9 +27,15 @@ def _install_excepthook():
     sys.excepthook = _hook
 
 
+def _icon_path() -> str:
+    base = sys._MEIPASS if getattr(sys, "frozen", False) else os.path.dirname(__file__)
+    return os.path.join(base, "assets", "icon.ico")
+
+
 def main():
     _install_excepthook()
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(_icon_path()))
     app.setQuitOnLastWindowClosed(False)
 
     shared_mem = QSharedMemory("SimpleClock-singleton")
