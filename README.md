@@ -1,43 +1,43 @@
-> **⚠️ 주의:** 이 프로젝트는 AI(Claude)와 함께 작업한 결과물입니다. 예상치 못한 동작이 발생할 수 있습니다.
+> **⚠️ 주의:** 이 프로젝트는 AI(Claude)로 작업한 결과물입니다. 제대로 실행이 안 되거나 버그가 존재할 수 있습니다.
 
 # SimpleClock
 
-Windows 바탕화면 위에 띄우는 커스터마이즈 가능한 시계 오버레이입니다.
+커스터마이즈 가능한 시계 프로그램입니다.
+
+<img width="1440" height="285" alt="image" src="https://github.com/user-attachments/assets/07e176ff-d40b-4a03-a94c-bd397165610b" />
+
+
+**커스터마이즈 메뉴**
+<img width="771" height="487" alt="image" src="https://github.com/user-attachments/assets/608bc755-6178-4b5e-a1c6-d2d00e4a7b1a" />
+
+
+**윈도우 창 최소 크기 없음**
+<img width="187" height="150" alt="image" src="https://github.com/user-attachments/assets/d19f2ebd-3aee-4248-91d7-6cfb78787bd2" />
+
 
 ## 설치
 
-[GitHub Releases](https://github.com/kimkun07/simple-clock/releases) 에서 최신 `SimpleClock.exe`를 받아 실행하세요. 별도 설치 과정은 없습니다.
+[GitHub Releases](https://github.com/kimkun07/simple-clock/releases) 에서 최신 `SimpleClock.exe`를 받아 실행하세요.
 
 ## 주요 기능
+
+### 커스터마이즈
+
+우측 하단 `☰` 버튼을 눌러 설정 창을 엽니다.
+
+설정은 `%APPDATA%\SimpleClock\config.json`에 자동 저장됩니다.
 
 ### 시간 변수 텍스트박스
 
 템플릿 텍스트에 변수를 삽입하면 자동으로 현재 시각으로 치환됩니다.
 
-| 변수 | 출력 예 | 설명 |
+| 입력 예시 | 출력 예시 | 설명 |
 |------|---------|------|
-| `{HH}` `{mm}` `{ss}` | `09:07:03` | 시/분/초 (0 패딩) |
-| `{H}` `{m}` `{s}` | `9:7:3` | 시/분/초 (패딩 없음) |
-| `{YYYY}` `{MM}` `{DD}` | `2026-05-04` | 연/월/일 (0 패딩) |
-| `{M}` `{D}` | `5` / `4` | 월/일 (패딩 없음) |
+| `{HH}:{mm}:{ss}` | `09:07:03` | 시/분/초 (0 패딩) |
+| `{H}:{m}:{s}` | `9:7:3` | 시/분/초 (패딩 없음) |
+| `{YYYY}-{MM}-{DD}` | `2026-05-04` | 연/월/일 (0 패딩) |
+| `{M}/{D}` | `5/4` | 월/일 (패딩 없음) |
 | `{YY}` | `26` | 연도 2자리 |
 | `{ddd}` | `Mon` | 영문 요일 축약 |
 | `{KW}` | `월` | 한국어 요일 |
 
-### 텍스트 서식
-
-텍스트 일부를 선택한 뒤 굵게(B), 기울임(I), 색상을 지정할 수 있습니다. 여러 텍스트박스를 추가해 각각 다른 폰트와 크기를 설정할 수 있습니다.
-
-### 자동 크기 조정
-
-텍스트박스는 내용에 맞게 너비와 높이가 자동으로 조정됩니다.
-
-### 창 설정
-
-우측 하단 `☰` 버튼을 눌러 설정 창을 엽니다.
-
-- 배경색 / 타이틀바 색상 변경
-- 항상 위 (Always on top)
-- 텍스트박스 위치(X, Y) 조정
-
-설정은 `%APPDATA%\SimpleClock\config.json`에 자동 저장됩니다.
